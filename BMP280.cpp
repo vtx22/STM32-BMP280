@@ -94,3 +94,9 @@ void BMP280::get_calibration_data()
     dig_P8 = (_calib_bytes[21] << 8) | _calib_bytes[20];
     dig_P9 = (_calib_bytes[23] << 8) | _calib_bytes[22];
 }
+
+void BMP280::reset()
+{
+    uint8_t reset_cmd = BMP280_RESET_CMD;
+    HAL_I2C_Mem_Write(_hi2c, _address << 1, BMP280_REG_RESET, I2C_MEMADD_SIZE_8BIT, &reset_cmd, 1, HAL_MAX_DELAY);
+}

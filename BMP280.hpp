@@ -35,6 +35,8 @@ public:
     float get_pressure();
     float get_temperature();
 
+    void reset();
+
 private:
     void get_calibration_data();
 
