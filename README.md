@@ -78,4 +78,12 @@ void set_standby_time(BMP280_STANDBY_TIME time);
 void set_filter_coefficient(BMP280_FILTER_COEFFICIENT coeff);
 ```
 
-
+## Recommende settings for different use cases
+| Use case | Power Mode | Pressure<br>Oversampling | Temperature<br>Oversampling | IIR filter<br>coeff. |
+| --- | :---: | :---: | :---: | :---: |
+| Handheld device,<br>low power | Normal | x16 | x2 | 4 |
+| Handheld device,<br>dynamic | Normal | x4 | x1 | 16 |
+| Weather monitor | Forced | x1 | x1 | Off |
+| Elevator / Floor <br>change detection | Normal | x4 | x1 | 4 |
+| Drop detection | Normal | x2 | x1 | Off |
+| Indoor navigation | Normal | x16 | x2 | 16 |
