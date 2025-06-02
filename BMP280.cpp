@@ -76,20 +76,21 @@ bool BMP280::init()
 
 void BMP280::get_calibration_data()
 {
-    HAL_I2C_Mem_Read(_hi2c, _address << 1, BMP280_REG_CALIB, I2C_MEMADD_SIZE_8BIT, _calib_bytes, 24, HAL_MAX_DELAY);
+    uint8_t calib_bytes[24] = {0};
+    HAL_I2C_Mem_Read(_hi2c, _address << 1, BMP280_REG_CALIB, I2C_MEMADD_SIZE_8BIT, calib_bytes, 24, HAL_MAX_DELAY);
 
-    dig_T1 = (_calib_bytes[1] << 8) | _calib_bytes[0];
-    dig_T2 = (_calib_bytes[3] << 8) | _calib_bytes[2];
-    dig_T3 = (_calib_bytes[5] << 8) | _calib_bytes[4];
-    dig_P1 = (_calib_bytes[7] << 8) | _calib_bytes[6];
-    dig_P2 = (_calib_bytes[9] << 8) | _calib_bytes[8];
-    dig_P3 = (_calib_bytes[11] << 8) | _calib_bytes[10];
-    dig_P4 = (_calib_bytes[13] << 8) | _calib_bytes[12];
-    dig_P5 = (_calib_bytes[15] << 8) | _calib_bytes[14];
-    dig_P6 = (_calib_bytes[17] << 8) | _calib_bytes[16];
-    dig_P7 = (_calib_bytes[19] << 8) | _calib_bytes[18];
-    dig_P8 = (_calib_bytes[21] << 8) | _calib_bytes[20];
-    dig_P9 = (_calib_bytes[23] << 8) | _calib_bytes[22];
+    dig_T1 = (calib_bytes[1] << 8) | calib_bytes[0];
+    dig_T2 = (calib_bytes[3] << 8) | calib_bytes[2];
+    dig_T3 = (calib_bytes[5] << 8) | calib_bytes[4];
+    dig_P1 = (calib_bytes[7] << 8) | calib_bytes[6];
+    dig_P2 = (calib_bytes[9] << 8) | calib_bytes[8];
+    dig_P3 = (calib_bytes[11] << 8) | calib_bytes[10];
+    dig_P4 = (calib_bytes[13] << 8) | calib_bytes[12];
+    dig_P5 = (calib_bytes[15] << 8) | calib_bytes[14];
+    dig_P6 = (calib_bytes[17] << 8) | calib_bytes[16];
+    dig_P7 = (calib_bytes[19] << 8) | calib_bytes[18];
+    dig_P8 = (calib_bytes[21] << 8) | calib_bytes[20];
+    dig_P9 = (calib_bytes[23] << 8) | calib_bytes[22];
 }
 
 void BMP280::reset()

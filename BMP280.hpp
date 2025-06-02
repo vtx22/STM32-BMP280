@@ -66,8 +66,6 @@ private:
 
     int32_t t_fine = 0;
 
-    uint8_t _calib_bytes[24] = {0};
-
     I2C_HandleTypeDef *_hi2c = nullptr;
     uint8_t _address;
 };
