@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BMP280_reg.hpp"
 #include <cstdint>
 
 // Use the following flags for compiling the right library, e.g.: -D STM32F1

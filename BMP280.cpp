@@ -7,19 +7,19 @@ BMP280::BMP280(I2C_HandleTypeDef *hi2c, uint8_t address) : _hi2c(hi2c), _address
 uint8_t BMP280::get_chip_id()
 {
     uint8_t chip_id = 0;
-    HAL_I2C_Mem_Read(_hi2c, _address << 1, 0xD0, I2C_MEMADD_SIZE_8BIT, &chip_id, 1, HAL_MAX_DELAY);
+    HAL_I2C_Mem_Read(_hi2c, _address << 1, BMP280_REG_CHIP_ID, I2C_MEMADD_SIZE_8BIT, &chip_id, 1, HAL_MAX_DELAY);
     return chip_id;
 }
 
 bool BMP280::is_available()
 {
-    return get_chip_id() == 0x58;
+    return get_chip_id() == BMP280_DEFAULT_CHIP_ID;
 }
 
 void BMP280::get_pressure_and_temperature()
 {
     uint8_t data[6];
-    HAL_I2C_Mem_Read(_hi2c, _address << 1, 0xF7, I2C_MEMADD_SIZE_8BIT, data, 6, HAL_MAX_DELAY);
+    HAL_I2C_Mem_Read(_hi2c, _address << 1, BMP280_REG_PRESSURE, I2C_MEMADD_SIZE_8BIT, data, 6, HAL_MAX_DELAY);
 
     int32_t adc_T = (data[3] << 12) | (data[4] << 4) | (data[5] >> 4);
     int32_t adc_P = (data[0] << 12) | (data[1] << 4) | (data[2] >> 4);
@@ -60,9 +60,6 @@ float BMP280::get_pressure()
 {
     get_pressure_and_temperature();
     return _pressure;
-
-    uint8_t data[6];
-    HAL_I2C_Mem_Read(_hi2c, _address << 1, 0xF7, I2C_MEMADD_SIZE_8BIT, data, 6, HAL_MAX_DELAY);
 }
 
 bool BMP280::init()
@@ -75,14 +72,14 @@ bool BMP280::init()
     get_calibration_data();
 
     uint8_t config[2] = {0b01011111, 0b00011100};
-    HAL_I2C_Mem_Write(_hi2c, _address << 1, 0xF4, I2C_MEMADD_SIZE_8BIT, config, 2, HAL_MAX_DELAY);
+    HAL_I2C_Mem_Write(_hi2c, _address << 1, BMP280_REG_CTRL_MEAS, I2C_MEMADD_SIZE_8BIT, config, 2, HAL_MAX_DELAY);
 
     return true;
 }
 
 void BMP280::get_calibration_data()
 {
-    HAL_I2C_Mem_Read(_hi2c, _address << 1, 0x88, I2C_MEMADD_SIZE_8BIT, _calib_bytes, 24, HAL_MAX_DELAY);
+    HAL_I2C_Mem_Read(_hi2c, _address << 1, BMP280_REG_CALIB, I2C_MEMADD_SIZE_8BIT, _calib_bytes, 24, HAL_MAX_DELAY);
 
     dig_T1 = (_calib_bytes[1] << 8) | _calib_bytes[0];
     dig_T2 = (_calib_bytes[3] << 8) | _calib_bytes[2];
