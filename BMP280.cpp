@@ -41,7 +41,7 @@ void BMP280::get_pressure_and_temperature()
     var1 = (1.0 + var1 / 32768.0) * ((double)dig_P1);
     if (var1 == 0.0)
     {
-        return 0; // avoid exception caused by division by zero
+        return; // avoid exception caused by division by zero
     }
     p = 1048576.0 - (double)adc_P;
     p = (p - (var2 / 4096.0)) * 6250.0 / var1;
@@ -71,9 +71,6 @@ bool BMP280::init()
 
     get_calibration_data();
 
-    uint8_t config[2] = {0b01011111, 0b00011100};
-    HAL_I2C_Mem_Write(_hi2c, _address << 1, BMP280_REG_CTRL_MEAS, I2C_MEMADD_SIZE_8BIT, config, 2, HAL_MAX_DELAY);
-
     return true;
 }
 
@@ -99,4 +96,59 @@ void BMP280::reset()
 {
     uint8_t reset_cmd = BMP280_RESET_CMD;
     HAL_I2C_Mem_Write(_hi2c, _address << 1, BMP280_REG_RESET, I2C_MEMADD_SIZE_8BIT, &reset_cmd, 1, HAL_MAX_DELAY);
+}
+
+void BMP280::set_pressure_oversampling(BMP280_OVERSAMPLING oversampling)
+{
+    uint8_t reg = 0;
+    HAL_I2C_Mem_Read(_hi2c, _address << 1, BMP280_REG_CTRL_MEAS, I2C_MEMADD_SIZE_8BIT, &reg, 1, HAL_MAX_DELAY);
+
+    reg &= 0b11100011;
+    reg |= ((uint8_t)oversampling) << 2;
+
+    HAL_I2C_Mem_Write(_hi2c, _address << 1, BMP280_REG_CTRL_MEAS, I2C_MEMADD_SIZE_8BIT, &reg, 1, HAL_MAX_DELAY);
+}
+
+void BMP280::set_temperature_oversampling(BMP280_OVERSAMPLING oversampling)
+{
+    uint8_t reg = 0;
+    HAL_I2C_Mem_Read(_hi2c, _address << 1, BMP280_REG_CTRL_MEAS, I2C_MEMADD_SIZE_8BIT, &reg, 1, HAL_MAX_DELAY);
+
+    reg &= 0b00011111;
+    reg |= ((uint8_t)oversampling) << 5;
+
+    HAL_I2C_Mem_Write(_hi2c, _address << 1, BMP280_REG_CTRL_MEAS, I2C_MEMADD_SIZE_8BIT, &reg, 1, HAL_MAX_DELAY);
+}
+
+void BMP280::set_power_mode(BMP280_POWER_MODE mode)
+{
+    uint8_t reg = 0;
+    HAL_I2C_Mem_Read(_hi2c, _address << 1, BMP280_REG_CTRL_MEAS, I2C_MEMADD_SIZE_8BIT, &reg, 1, HAL_MAX_DELAY);
+
+    reg &= 0b11111100;
+    reg |= (uint8_t)mode;
+
+    HAL_I2C_Mem_Write(_hi2c, _address << 1, BMP280_REG_CTRL_MEAS, I2C_MEMADD_SIZE_8BIT, &reg, 1, HAL_MAX_DELAY);
+}
+
+void BMP280::set_standby_time(BMP280_STANDBY_TIME time)
+{
+    uint8_t reg = 0;
+    HAL_I2C_Mem_Read(_hi2c, _address << 1, BMP280_REG_CONFIG, I2C_MEMADD_SIZE_8BIT, &reg, 1, HAL_MAX_DELAY);
+
+    reg &= 0b00011111;
+    reg |= ((uint8_t)time) << 5;
+
+    HAL_I2C_Mem_Write(_hi2c, _address << 1, BMP280_REG_CONFIG, I2C_MEMADD_SIZE_8BIT, &reg, 1, HAL_MAX_DELAY);
+}
+
+void BMP280::set_filter_coefficient(BMP280_FILTER_COEFFICIENT coeff)
+{
+    uint8_t reg = 0;
+    HAL_I2C_Mem_Read(_hi2c, _address << 1, BMP280_REG_CONFIG, I2C_MEMADD_SIZE_8BIT, &reg, 1, HAL_MAX_DELAY);
+
+    reg &= 0b11100011;
+    reg |= ((uint8_t)coeff) << 2;
+
+    HAL_I2C_Mem_Write(_hi2c, _address << 1, BMP280_REG_CONFIG, I2C_MEMADD_SIZE_8BIT, &reg, 1, HAL_MAX_DELAY);
 }

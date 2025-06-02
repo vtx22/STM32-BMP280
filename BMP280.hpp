@@ -37,6 +37,12 @@ public:
 
     void reset();
 
+    void set_pressure_oversampling(BMP280_OVERSAMPLING oversampling);
+    void set_temperature_oversampling(BMP280_OVERSAMPLING oversampling);
+    void set_power_mode(BMP280_POWER_MODE mode);
+    void set_standby_time(BMP280_STANDBY_TIME time);
+    void set_filter_coefficient(BMP280_FILTER_COEFFICIENT coeff);
+
 private:
     void get_calibration_data();
 
